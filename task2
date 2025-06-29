@@ -1,0 +1,29 @@
+// Simple Synchronous RAM Module with Read and Write Operations
+module simple_sync_ram #(
+    parameter DATA_WIDTH = 8,
+    parameter ADDR_WIDTH = 4
+) (
+    input wire                   clk,
+    input wire                   rst,
+    input wire                   we,         // Write enable
+    input wire [ADDR_WIDTH-1:0]  addr,
+    input wire [DATA_WIDTH-1:0]  din,        // Data input
+    output reg [DATA_WIDTH-1:0]  dout        // Data output
+);
+
+    // RAM memory array
+    reg [DATA_WIDTH-1:0] mem [0:(1<<ADDR_WIDTH)-1];
+
+    // Synchronous Read/Write Operation
+    always @(posedge clk) begin
+        if (rst) begin
+            dout <= {DATA_WIDTH{1'b0}};
+        end else if (we) begin
+            mem[addr] <= din;      // Write operation
+            dout <= din;           // Optional: Read after write (write-through)
+        end else begin
+            dout <= mem[addr];     // Read operation
+        end
+    end
+
+endmodule
